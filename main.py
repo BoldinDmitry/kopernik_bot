@@ -53,6 +53,7 @@ def faq(message):
     if type(buttons_now) is str:
         markup = types.ReplyKeyboardMarkup()
         markup.add(strings["menu"]["menu_name"])
+        markup.add(strings["call_admin"])
         markup.add(strings["back_button"])
         bot.send_message(message.chat.id, buttons_now, reply_markup=markup)
 
@@ -64,7 +65,8 @@ def faq(message):
                          first_name=buttons_now["first_name"], reply_markup=markup)
 
     else:
-        print(buttons_now)
+
+        buttons_now.append(strings["call_admin"])
         buttons_now.append(strings["back_button"])
         markup = types.ReplyKeyboardMarkup()
         for button in buttons_now:
@@ -73,45 +75,6 @@ def faq(message):
         bot.send_message(message.chat.id, strings["faq"]["message"], reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: message.text == "/root_menu")
-def root_menu(message):
-    markup = types.ReplyKeyboardMarkup()
-    for button in strings["root_menu"]["keyboard_buttons"]:
-        markup.add(button)
-    markup.add(strings["back_button"])
-    bot.send_message(message.chat.id, strings["root_menu"]["message"], reply_markup=markup)
-    root_menu_flag.append(message.chat.id)
-
-
-@bot.message_handler(func=lambda message: message.chat.id in root_menu_flag)
-def active_root_menu(message):
-    global adding_question
-    if message.text == strings["back_button"]:
-        send_welcome(message)
-        return None
-    elif message.text == strings["add_question"]["call_mes"]:
-
-        bot.send_message(message.chat.id, strings["add_question"]["message"])
-        root_menu_flag.remove(message.chat.id)
-        adding_question.append(message.chat.id)
-
-
-@bot.message_handler(func=lambda message: message.chat.id in adding_question)
-def add_question_bot(message):
-    if message.text == strings["back_button"]:
-        send_welcome(message)
-        return None
-    buttons_names = message.text.split(",")
-    question_and_answer = buttons_names[-1].split(";")[-1]
-    buttons_names[-1] = buttons_names[-1].split(";")[0]
-
-    question = question_and_answer.split(":")[0]
-    answer = question_and_answer.split(":")[1]
-    try:
-        add_question(buttons_names, question, answer)
-        bot.send_message(message.chat.id, strings["add_question"]["all_ok_mes"])
-    except:
-        bot.send_message(message.chat.id, strings["add_question"]["failed"])
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)

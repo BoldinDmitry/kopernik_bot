@@ -20,5 +20,7 @@ strings = {
 
 
     },
-    "back_button": "Назад"
+    "back_button": "Назад",
+    "call_admin": "Я не нашел нужный вопрос",
+    "admin_contact": {"phone_number": "+7 985 214-88-86", "first_name": "Дмитрий"},
 }
