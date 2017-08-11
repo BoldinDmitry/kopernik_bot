@@ -1,11 +1,13 @@
 import telebot
-from telebot import types
-
 import config
+import botan
+
+from telebot import types
 from faq import *
 from text_files.strings import *
 
 bot = telebot.TeleBot(config.key)
+botan_key = config.analytics_key
 
 buttons_last = {}
 faq_flag = []
@@ -17,6 +19,13 @@ adding_question = []
 
 @bot.message_handler(func=lambda message: message.text in [strings["menu"]["menu_name"], "/start"])
 def send_welcome(message):
+    """
+    Функция, показывающая reply_markup с кнопками меню
+    :param message: Сообщение, присланное пользователем
+    """
+
+    botan.track(botan_key, message.chat.id, message.text, strings["menu"]["menu_name"])
+
     global faq_flag
     if message.chat.id in faq_flag:
         faq_flag.remove(message.chat.id)
@@ -31,6 +40,8 @@ def faq(message):
     global buttons_last
     global faq_flag
     global buttons_now
+
+    botan.track(botan_key, message.chat.id, message.text, strings["faq"]["call_mes"])
 
     if message.text == strings["faq"]["call_mes"]:
         buttons_last[message.chat.id] = []
@@ -64,6 +75,8 @@ def faq(message):
         bot.send_contact(message.chat.id, phone_number=buttons_now["phone_number"],
                          first_name=buttons_now["first_name"], reply_markup=markup)
 
+        botan.track(botan_key, message.chat.id, message.text, strings["call_admin"])
+
     else:
 
         buttons_now.append(strings["call_admin"])
@@ -73,7 +86,6 @@ def faq(message):
             markup.add(button)
 
         bot.send_message(message.chat.id, strings["faq"]["message"], reply_markup=markup)
-
 
 
 if __name__ == '__main__':
