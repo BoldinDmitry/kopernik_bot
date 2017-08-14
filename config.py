@@ -1,2 +1,0 @@
-key = "383341202:AAFkYAIeP8hS7Xj1HZuECI9nouvPuxKgMX0"
-analytics_key = "a1529194-6882-4be9-a10f-532919bf4e2a"
