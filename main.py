@@ -19,6 +19,7 @@ adding_question = []
 
 @bot.message_handler(func=lambda message: message.text in [strings["menu"]["menu_name"], "/start"])
 def send_welcome(message):
+    print(message.chat.id)
     """
     Функция, показывающая reply_markup с кнопками меню
     :param message: Сообщение, присланное пользователем
@@ -89,4 +90,8 @@ def faq(message):
 
 
 if __name__ == '__main__':
-    bot.polling(none_stop=True)
+    try:
+        bot.polling(none_stop=True)
+    except Exception as error:
+        for dev_id in strings["dev_id"]:
+            bot.send_message(dev_id, str(error))
