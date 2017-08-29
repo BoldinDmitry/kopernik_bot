@@ -5,7 +5,7 @@ with open("json_files/tree.json") as json_file:
     tree = json.load(json_file)
 
 
-def tree_parser(buttons_names: list) -> list or str or dict:
+def tree_parser(buttons_names: list) -> list or str:
     """
 
     :param buttons_names: лист с названиеям нажатых пользователем кнопок
@@ -41,23 +41,24 @@ def add_question(buttons_names: list, question: str, answer: str) -> None:
         new_tree = new_tree[button]
     new_tree[question] = answer
     for_return = {}
-    for i in range(-len(buttons_names), 0):
+    for i in range(-len(buttons_names), 0, -1):
         if i == 1-len(buttons_names):
             for_return[buttons_names[i]] = new_tree
         else:
             for_return[buttons_names[i]] = tree[buttons_names[i]]
-    tree = for_return
+
+    print(tree)
     with open("json_files/tree.json", "w") as outfile:
         json.dump(tree, outfile)
 
 
-def remove_question(buttons_names: list, question: str) -> int:
+def remove_question(buttons_names: list, question: str) -> bool:
     """
 
     :param buttons_names: лист с названиеям нажатых пользователем кнопок
     :param question: Вопрос, который необходимо удалить
-    :return: -1 - Вопрос не найден
-              0 - Вопрос был удален
+    :return: False - Вопрос не найден
+              True - Вопрос был удален
     """
     global tree
 
@@ -67,7 +68,7 @@ def remove_question(buttons_names: list, question: str) -> int:
     print(new_tree)
     for_return = {}
     if question not in new_tree.keys():
-        return -1
+        return False
 
     del new_tree[question]
 
@@ -81,4 +82,6 @@ def remove_question(buttons_names: list, question: str) -> int:
     with open("json_files/tree.json", "w") as outfile:
         json.dump(tree, outfile)
 
-    return 0
+        return True
+
+add_question(["Еда"], "Вопрос", "Ответ")
